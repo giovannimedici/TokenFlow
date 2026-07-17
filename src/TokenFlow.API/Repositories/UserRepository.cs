@@ -8,13 +8,6 @@ namespace TokenFlow.API.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly TokenFlowDbContext _context;
-    // public UserRepository(IMongoDbService mongoDbService, IConfiguration configuration)
-    // {
-    //     var userCollectionName = configuration["MongoDB:Collections:Users"] ??
-    //         throw new ArgumentNullException("Collections:User", "MongoDB:Collections:Users is not set");
-
-    //     _users = mongoDbService.GetCollection<User>(userCollectionName);
-    // }
 
     public UserRepository(TokenFlowDbContext context)
     {

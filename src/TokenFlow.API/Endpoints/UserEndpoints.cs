@@ -12,6 +12,12 @@ public static class UserEndpoints
             .WithTags("Users")
             .WithSummary("Create a new user")
             .WithDescription("Create a new user with the given name and password");
+
+        app.MapPost("/users/authenticate", AuthenticateAsync)
+            .WithName("Authenticate")
+            .WithTags("Users")
+            .WithSummary("Authenticate a user")
+            .WithDescription("Authenticate a user with the given name and password");
     }
 
     public static async Task<IResult> CreateUserAsync(
@@ -30,5 +36,14 @@ public static class UserEndpoints
         var user = await userService.CreateUserAsync(userRequest, cancellationToken);
 
         return Results.Created($"/users/{user.Id}", user);
+    }
+
+    public static async Task<IResult> AuthenticateAsync(
+        UserRequest userRequest,
+        IUserService userService,
+        CancellationToken cancellationToken)
+    {
+        var token = await userService.AuthenticateAsync(userRequest, cancellationToken);
+        return Results.Ok(token);
     }
 }

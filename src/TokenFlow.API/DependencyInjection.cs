@@ -19,7 +19,9 @@ public static class DependencyInjection
 
         services.AddDbContext<TokenFlowDbContext>(options =>
             options.UseMongoDB(connectionString, database));
-            
+
+
+        services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
 
