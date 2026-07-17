@@ -24,11 +24,11 @@ public class UserService(
         return new UserResponse(user.Id, user.Username);
     }
 
-    public async Task<string> AuthenticateAsync(UserRequest userRequest, CancellationToken cancellationToken)
+    public async Task<string> AuthenticateAsync(AuthRequest authRequest, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserByUsernameAsync(userRequest.Username, cancellationToken);
+        var user = await userRepository.GetUserByUsernameAsync(authRequest.Username, cancellationToken);
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(userRequest.Password, user.Password))
+        if (user == null || !BCrypt.Net.BCrypt.Verify(authRequest.Password, user.Password))
         {
             throw new DomainException("Invalid username or password");
         }

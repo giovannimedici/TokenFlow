@@ -1,5 +1,6 @@
 using TokenFlow.API.DTOs;
 using TokenFlow.API.Services;
+using FluentValidation;
 
 namespace TokenFlow.API.Endpoints;
 
@@ -23,15 +24,15 @@ public static class UserEndpoints
     public static async Task<IResult> CreateUserAsync(
         UserRequest userRequest,
         IUserService userService,
-        // IValidator<MemberRequestDto> validator,
+        IValidator<UserRequest> validator,
         CancellationToken cancellationToken)
     {
-        // var validationResult = await validator.ValidateAsync(memberRequestDto, cancellationToken);
+        var validationResult = await validator.ValidateAsync(userRequest, cancellationToken);
 
-        // if (!validationResult.IsValid)
-        // {
-        //     return Results.ValidationProblem(validationResult.ToDictionary(), "Validation error");
-        // }
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary(), "Validation error");
+        }
 
         var user = await userService.CreateUserAsync(userRequest, cancellationToken);
 
@@ -39,11 +40,19 @@ public static class UserEndpoints
     }
 
     public static async Task<IResult> AuthenticateAsync(
-        UserRequest userRequest,
+        AuthRequest authRequest,
         IUserService userService,
+        IValidator<AuthRequest> validator,
         CancellationToken cancellationToken)
     {
-        var token = await userService.AuthenticateAsync(userRequest, cancellationToken);
+        var validationResult = await validator.ValidateAsync(authRequest, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary(), "Validation error");
+        }
+
+        var token = await userService.AuthenticateAsync(authRequest, cancellationToken);
         return Results.Ok(token);
     }
 }
