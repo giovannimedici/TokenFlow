@@ -5,7 +5,9 @@ using TokenFlow.API.Exceptions;
 
 namespace TokenFlow.API.Services;
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(
+    IUserRepository userRepository,
+    IJwtService jwtService) : IUserService
 {
     public async Task<UserResponse> CreateUserAsync(UserRequest userRequest, CancellationToken cancellationToken)
     {
@@ -22,8 +24,15 @@ public class UserService(IUserRepository userRepository) : IUserService
         return new UserResponse(user.Id, user.Username);
     }
 
-    public async Task<string> GenerateTokenAsync(UserRequest userRequest, CancellationToken cancellationToken)
+    public async Task<string> AuthenticateAsync(AuthRequest authRequest, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetUserByUsernameAsync(authRequest.Username, cancellationToken);
+
+        if (user == null || !BCrypt.Net.BCrypt.Verify(authRequest.Password, user.Password))
+        {
+            throw new DomainException("Invalid username or password");
+        }
+
+        return jwtService.GenerateToken(user.Username);
     }
 }

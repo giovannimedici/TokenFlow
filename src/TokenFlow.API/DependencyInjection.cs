@@ -2,6 +2,8 @@ using TokenFlow.API.Services;
 using TokenFlow.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 using TokenFlow.API.Data;
+using FluentValidation;
+using TokenFlow.API.Validators;
 
 namespace TokenFlow.API;
 
@@ -19,9 +21,12 @@ public static class DependencyInjection
 
         services.AddDbContext<TokenFlowDbContext>(options =>
             options.UseMongoDB(connectionString, database));
-            
+
+
+        services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
 
         return services;
     }
