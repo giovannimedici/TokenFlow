@@ -1,0 +1,9 @@
+**/.git
+**/.vs
+**/bin
+**/obj
+**/out
+tests/
+*.md
+.env
+.DS_Store
