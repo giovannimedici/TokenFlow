@@ -33,6 +33,6 @@ public class UserService(
             throw new DomainException("Invalid username or password");
         }
 
-        return jwtService.GenerateToken(user.Username);
+        return jwtService.GenerateToken(user.Id);
     }
 }
