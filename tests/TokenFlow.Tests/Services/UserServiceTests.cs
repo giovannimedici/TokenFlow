@@ -59,7 +59,7 @@ public class UserServiceTests
         var token = await _sut.AuthenticateAsync(request, CancellationToken.None);
 
         Assert.Equal("jwt-token", token);
-        Assert.Equal(username, _jwtService.GeneratedForUsername);
+        Assert.Equal(user.Id, _jwtService.GeneratedForUserId);
     }
 
     [Fact]
@@ -112,11 +112,11 @@ public class UserServiceTests
     private sealed class FakeJwtService : IJwtService
     {
         public string TokenToReturn { get; set; } = "test-token";
-        public string? GeneratedForUsername { get; private set; }
+        public Guid? GeneratedForUserId { get; private set; }
 
-        public string GenerateToken(string username)
+        public string GenerateToken(Guid userId)
         {
-            GeneratedForUsername = username;
+            GeneratedForUserId = userId;
             return TokenToReturn;
         }
     }
